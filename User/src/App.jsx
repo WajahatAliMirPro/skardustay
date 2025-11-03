@@ -1,8 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import AddHotel from "./pages/AddHotel";
 import HotelDetail from "./pages/HotelDetail";
+import Login from "./pages/Login"; // We'll use this later
+
+// Admin pages - we'll protect these later
+import AddHotel from "./pages/AddHotel";
 import EditHotels from "./components/EditHotels";
 
 import "./App.css";
@@ -12,11 +15,14 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
+        {/* --- Public User Routes --- */}
         <Route path="/" element={<Home />} />
-        <Route path="/add" element={<AddHotel />} />
         <Route path="/hotel/:id" element={<HotelDetail />} />
-        <Route path="/edit-hotels" element={<EditHotels />} />
+        <Route path="/login" element={<Login />} />
 
+        {/* --- Admin Routes (Currently open for testing, we will protect later) --- */}
+        <Route path="/add" element={<AddHotel />} />
+        <Route path="/edit-hotels" element={<EditHotels />} />
       </Routes>
     </BrowserRouter>
   );

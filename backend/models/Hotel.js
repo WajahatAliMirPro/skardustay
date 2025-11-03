@@ -6,5 +6,6 @@ const hotelSchema = new mongoose.Schema({
   images: { type: [String], required: true }
 });
 
-const Hotel = mongoose.model("Hotel", hotelSchema);
+// FIX: Check if model already exists before compiling it
+const Hotel = mongoose.models.Hotel || mongoose.model("Hotel", hotelSchema);
 export default Hotel;

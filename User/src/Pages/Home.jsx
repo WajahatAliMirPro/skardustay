@@ -1,3 +1,4 @@
+// skardustay/src/Pages/Home.jsx
 import { useEffect, useState } from "react";
 import { API_URL } from "../api";
 import HotelCard from "../components/HotelCard";
