@@ -1,10 +1,12 @@
+// backend/routes/bookingRoutes.js
 import express from "express";
 import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
+import authMiddleware from "../middleware/authMiddleware.js"; // Import auth middleware
 
 const router = express.Router();
 
-// --- Create a new booking (User action) ---
+// --- Create a new booking (User action - Public) ---
 router.post("/", async (req, res) => {
   try {
     const { 
@@ -45,10 +47,11 @@ router.post("/", async (req, res) => {
   }
 });
 
-// --- Get all bookings (Admin action - we'll use this later) ---
-router.get("/", async (req, res) => {
+// --- Get all bookings (Admin action - Protected) ---
+router.get("/", authMiddleware, async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
+    // Sort by checkInDate descending (newest first)
+    const bookings = await Booking.find().sort({ checkInDate: -1 }); 
     res.json(bookings);
   } catch (err) {
     console.error("❌ Error fetching bookings:", err);
@@ -56,7 +59,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// --- Check if a hotel is booked for a SPECIFIC DATE (User action) ---
+// --- Check if a hotel is booked for a SPECIFIC DATE (User action - Public) ---
 router.get("/check/:hotelId", async (req, res) => {
   try {
     const { hotelId } = req.params;
@@ -89,4 +92,67 @@ router.get("/check/:hotelId", async (req, res) => {
   }
 });
 
+// --- Get a single booking (Admin action - Protected) ---
+router.get("/:id", authMiddleware, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.json(booking);
+  } catch (err) {
+    console.error("❌ Error fetching single booking:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// --- Update a booking (Admin action - Protected) ---
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const { 
+      customerName, 
+      customerEmail, 
+      checkInDate, 
+      daysToStay, 
+      bedsRequired 
+    } = req.body;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      {
+        customerName,
+        customerEmail,
+        checkInDate: new Date(checkInDate),
+        daysToStay: Number(daysToStay),
+        bedsRequired: Number(bedsRequired),
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.json({ message: "✅ Booking updated", booking: updatedBooking });
+  } catch (err) {
+    console.error("❌ Error updating booking:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// --- Delete a booking (Admin action - Protected) ---
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    const deletedBooking = await Booking.findByIdAndDelete(req.params.id);
+    if (!deletedBooking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+    res.json({ message: "✅ Booking deleted" });
+  } catch (err) {
+    console.error("❌ Error deleting booking:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
+
+

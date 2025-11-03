@@ -1,42 +1,225 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* 🌙 GLOBAL DARK THEME */
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  margin: 0;
+  background-color: #0a0f0f;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+
+/* 🌟 NAVBAR */
+.navbar {
+  background-color: #001f1f;
+  color: #ffffff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  width: 45px;
+  margin-right: 10px;
+  border-radius: 50%;
+  border: 2px solid teal;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 15px;
+}
+
+.navbar-links .nav-link {
+  color: #b2ffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.navbar-links .nav-link:hover {
+  color: #00cccc;
+  transform: scale(1.05);
+}
+
+/* 🏨 HOME PAGE GRID */
+.home {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+/* 🪶 HOTEL CARD */
+.hotel-card {
+  background: #102020;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hotel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
+}
+
+.hotel-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 3px solid teal;
+}
+
+.hotel-card h3 {
+  margin: 10px 0 5px;
+  color: #b2ffff;
+}
+
+.hotel-card p {
+  color: #aaa;
+  font-size: 0.95rem;
+  padding: 0 10px;
+}
+
+.view-btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 8px 14px;
+  background: teal;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.view-btn:hover {
+  background: #00cccc;
+  transform: scale(1.05);
+}
+
+/* ➕ ADD HOTEL PAGE */
+.add-hotel {
+  max-width: 500px;
+  margin: 50px auto;
+  background: #101a1a;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.05);
+}
+
+.add-hotel h2 {
+  text-align: center;
+  color: #00cccc;
+  margin-bottom: 20px;
+}
+
+.add-hotel form input,
+.add-hotel form textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #004c4c;
+  background: #0c1414;
+  color: white;
+}
+
+.add-hotel form input::placeholder,
+.add-hotel form textarea::placeholder {
+  color: #999;
+}
+
+.add-hotel button {
+  background: teal;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.add-hotel button:hover {
+  background: #00cccc;
+  transform: scale(1.03);
+}
+
+/* 🏞 HOTEL DETAIL PAGE */
+.hotel-detail {
+  padding: 30px;
+  max-width: 900px;
+  margin: auto;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.hotel-detail h2 {
+  color: #b2ffff;
+  margin-bottom: 15px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hotel-detail p {
+  color: #ccc;
+  font-size: 1rem;
+  margin-bottom: 25px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Responsive grid for multiple images */
+.hotel-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
 }
 
-.card {
-  padding: 2em;
+.hotel-images img {
+  width: 280px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 255, 255, 0.1);
+  transition: transform 0.3s;
 }
 
-.read-the-docs {
-  color: #888;
+.hotel-images img:hover {
+  transform: scale(1.05);
+}
+.edit-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.edit-buttons button {
+  flex: 1;
+  margin: 5px;
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-buttons button:hover {
+  background: #555;
 }
