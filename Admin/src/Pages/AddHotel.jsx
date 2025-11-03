@@ -1,11 +1,13 @@
+// Admin/src/Pages/AddHotel.jsx
 import { useState } from "react";
-import { API_URL } from "../api";
+import { API_URL } from "../api.js";
 
 const AddHotel = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     setImages([...e.target.files]);
@@ -14,6 +16,14 @@ const AddHotel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("Uploading...");
+    setLoading(true);
+    const token = localStorage.getItem('adminToken'); // Get token
+
+    if (!token) {
+      setMessage("❌ You are not logged in.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -23,6 +33,10 @@ const AddHotel = () => {
 
       const res = await fetch(`${API_URL}/hotels`, {
         method: "POST",
+        headers: {
+          // Note: Content-Type is NOT set for FormData, browser does it
+          'Authorization': `Bearer ${token}`, // Add auth header
+        },
         body: formData,
       });
 
@@ -33,12 +47,15 @@ const AddHotel = () => {
         setTitle("");
         setDescription("");
         setImages([]);
+        e.target.reset(); // Reset file input
       } else {
         setMessage("❌ " + (data.error || "Failed to add hotel"));
       }
     } catch (err) {
       console.error(err);
       setMessage("❌ Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,20 +87,9 @@ const AddHotel = () => {
           required
         />
 
-        {/* Optional: Preview selected images */}
-        <div className="preview">
-          {images.length > 0 &&
-            images.map((img, i) => (
-              <img
-                key={i}
-                src={URL.createObjectURL(img)}
-                alt="preview"
-                className="preview-img"
-              />
-            ))}
-        </div>
-
-        <button type="submit">Add Hotel</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Adding..." : "Add Hotel"}
+        </button>
       </form>
 
       {message && <p className="status">{message}</p>}
@@ -92,3 +98,4 @@ const AddHotel = () => {
 };
 
 export default AddHotel;
+

@@ -1,4 +1,5 @@
-/* 🌙 GLOBAL DARK THEME */
+// Admin/src/App.css
+/* 嫌 GLOBAL DARK THEME */
 body {
   font-family: "Poppins", Arial, sans-serif;
   margin: 0;
@@ -7,7 +8,7 @@ body {
   line-height: 1.6;
 }
 
-/* 🌟 NAVBAR */
+/* 検 NAVBAR */
 .navbar {
   background-color: #001f1f;
   color: #ffffff;
@@ -24,11 +25,12 @@ body {
 .navbar-left {
   display: flex;
   align-items: center;
+  gap: 15px;
 }
 
 .navbar-logo {
   width: 45px;
-  margin-right: 10px;
+  height: 45px;
   border-radius: 50%;
   border: 2px solid teal;
 }
@@ -36,6 +38,7 @@ body {
 .navbar-links {
   display: flex;
   gap: 15px;
+  align-items: center;
 }
 
 .navbar-links .nav-link {
@@ -43,62 +46,143 @@ body {
   text-decoration: none;
   font-weight: 500;
   transition: 0.3s;
+  padding: 5px 10px;
+  border-radius: 6px;
 }
 
 .navbar-links .nav-link:hover {
   color: #00cccc;
+  background-color: rgba(0, 204, 204, 0.1);
   transform: scale(1.05);
 }
 
-/* 🏨 HOME PAGE GRID */
+.logout-btn {
+  background: #a13333;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", Arial, sans-serif;
+  font-size: 0.9rem;
+}
+.logout-btn:hover {
+  background: #c74040;
+  color: white;
+}
+
+
+/* 妾 LOGIN PAGE */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+.login-box {
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+  background: #101a1a;
+  padding: 25px 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 255, 255, 0.05);
+}
+.login-box h2 {
+  text-align: center;
+  color: #00cccc;
+  margin-bottom: 25px;
+}
+.login-form .form-group {
+  margin-bottom: 15px;
+}
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+  color: #b2ffff;
+  font-size: 0.9rem;
+}
+.login-form input {
+  width: 100%;
+  box-sizing: border-box; /* Important */
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #004c4c;
+  background: #0c1414;
+  color: white;
+  font-family: "Poppins", Arial, sans-serif;
+}
+.login-form button {
+  background: teal;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 10px;
+}
+.login-form button:hover {
+  background: #00cccc;
+  transform: scale(1.03);
+}
+.login-form button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+
+/* 妾 HOME PAGE GRID (Dashboard) */
 .home {
   text-align: center;
   padding: 40px 20px;
 }
-
 .hotel-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
   margin-top: 30px;
   padding: 0 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* 🪶 HOTEL CARD */
+/* ｪｶ HOTEL CARD */
 .hotel-card {
   background: #102020;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 255, 255, 0.05);
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
-
 .hotel-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 20px rgba(0, 255, 255, 0.1);
 }
-
 .hotel-img {
   width: 100%;
   height: 200px;
   object-fit: cover;
   border-bottom: 3px solid teal;
 }
-
 .hotel-card h3 {
-  margin: 10px 0 5px;
+  margin: 15px;
   color: #b2ffff;
 }
-
 .hotel-card p {
   color: #aaa;
   font-size: 0.95rem;
-  padding: 0 10px;
+  padding: 0 15px;
+  flex-grow: 1;
 }
-
 .view-btn {
   display: inline-block;
-  margin: 10px;
+  margin: 15px;
   padding: 8px 14px;
   background: teal;
   color: white;
@@ -106,14 +190,14 @@ body {
   text-decoration: none;
   font-weight: 500;
   transition: background 0.3s, transform 0.2s;
+  text-align: center;
 }
-
 .view-btn:hover {
   background: #00cccc;
   transform: scale(1.05);
 }
 
-/* ➕ ADD HOTEL PAGE */
+/* 筐ADD HOTEL PAGE */
 .add-hotel {
   max-width: 500px;
   margin: 50px auto;
@@ -122,30 +206,28 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 255, 255, 0.05);
 }
-
 .add-hotel h2 {
   text-align: center;
   color: #00cccc;
   margin-bottom: 20px;
 }
-
-.add-hotel form input,
-.add-hotel form textarea {
+.add-hotel-form input,
+.add-hotel-form textarea {
   width: 100%;
+  box-sizing: border-box;
   margin: 10px 0;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #004c4c;
   background: #0c1414;
   color: white;
+  font-family: "Poppins", Arial, sans-serif;
 }
-
-.add-hotel form input::placeholder,
-.add-hotel form textarea::placeholder {
+.add-hotel-form input::placeholder,
+.add-hotel-form textarea::placeholder {
   color: #999;
 }
-
-.add-hotel button {
+.add-hotel-form button {
   background: teal;
   color: white;
   border: none;
@@ -157,69 +239,151 @@ body {
   width: 100%;
   transition: background 0.3s, transform 0.2s;
 }
-
-.add-hotel button:hover {
+.add-hotel-form button:hover {
   background: #00cccc;
   transform: scale(1.03);
 }
 
-/* 🏞 HOTEL DETAIL PAGE */
+/* 償 HOTEL DETAIL PAGE */
 .hotel-detail {
   padding: 30px;
   max-width: 900px;
   margin: auto;
   text-align: center;
 }
-
 .hotel-detail h2 {
   color: #b2ffff;
   margin-bottom: 15px;
 }
-
 .hotel-detail p {
   color: #ccc;
   font-size: 1rem;
   margin-bottom: 25px;
+  text-align: left;
 }
-
-/* Responsive grid for multiple images */
 .hotel-images {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
 }
-
 .hotel-images img {
-  width: 280px;
+  width: 100%;
+  max-width: 280px;
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 255, 255, 0.1);
   transition: transform 0.3s;
 }
-
 .hotel-images img:hover {
   transform: scale(1.05);
 }
+
+/* 債 EDIT HOTELS PAGE */
 .edit-buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  padding: 0 15px 15px;
+  gap: 10px;
 }
-
 .edit-buttons button {
   flex: 1;
-  margin: 5px;
-  background: #333;
-  color: #fff;
   border: none;
-  padding: 8px;
+  padding: 9px;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.3s;
+  font-weight: 500;
+}
+.btn-edit { background: #2a6fdb; color: white; }
+.btn-edit:hover { background: #4c8cfb; }
+.btn-delete { background: #a13333; color: white; }
+.btn-delete:hover { background: #c74040; }
+.btn-save { background: #329932; color: white; }
+.btn-save:hover { background: #4cc74c; }
+.btn-cancel { background: #555; color: white; }
+.btn-cancel:hover { background: #777; }
+
+.edit-form {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.edit-form input,
+.edit-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #004c4c;
+  background: #0c1414;
+  color: white;
+  font-family: "Poppins", Arial, sans-serif;
+}
+.edit-form .edit-buttons {
+  padding: 0;
 }
 
-.edit-buttons button:hover {
-  background: #555;
+
+/* 債 BOOKINGS PAGE */
+.bookings-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
+.bookings-page h2 {
+  text-align: center;
+  color: #00cccc;
+  margin-bottom: 25px;
+}
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.booking-item {
+  background: #101a1a;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.booking-details h4 {
+  margin: 0 0 10px 0;
+  color: #b2ffff;
+  font-size: 1.2rem;
+}
+.booking-details p {
+  margin: 5px 0;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+.booking-details .booking-id {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 10px;
+}
+.booking-actions .btn-delete {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+
+/* 債 STATUS/ERROR MESSAGES */
+.status {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #00cccc;
+}
+.status.error {
+  color: #ff6b6b;
+  font-weight: 500;
+}
+

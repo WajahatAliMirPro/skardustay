@@ -1,4 +1,7 @@
+// Admin/src/components/EditHotels.jsx
 import React, { useEffect, useState } from "react";
+import { API_URL } from "../api.js"; // Import API_URL
+import "../App.css"; // Import CSS
 
 const EditHotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -7,22 +10,57 @@ const EditHotels = () => {
     title: "",
     description: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch all hotels
   useEffect(() => {
-    fetch("http://localhost:5000/api/hotels")
-      .then((res) => res.json())
-      .then((data) => setHotels(data))
-      .catch((err) => console.error("Error fetching hotels:", err));
+    setLoading(true);
+    fetch(`${API_URL}/hotels`) // Use API_URL
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then((data) => {
+        setHotels(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching hotels:", err);
+        setError("Error fetching hotels.");
+        setLoading(false);
+      });
   }, []);
+
+  const getToken = () => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      alert("❌ You are not logged in.");
+      return null;
+    }
+    return token;
+  }
 
   // Handle delete
   const deleteHotel = async (id) => {
+    const token = getToken();
+    if (!token) return;
+    
     if (window.confirm("Are you sure you want to delete this hotel?")) {
-      await fetch(`http://localhost:5000/api/hotels/${id}`, {
-        method: "DELETE",
-      });
-      setHotels(hotels.filter((h) => h._id !== id));
+      try {
+        const res = await fetch(`${API_URL}/hotels/${id}`, {
+          method: "DELETE",
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        if (!res.ok) throw new Error('Failed to delete');
+        
+        setHotels(hotels.filter((h) => h._id !== id));
+        alert("✅ Hotel deleted.");
+      } catch (err) {
+        alert("❌ Error deleting hotel.");
+      }
     }
   };
 
@@ -37,24 +75,38 @@ const EditHotels = () => {
 
   // Handle save edit
   const saveEdit = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/hotels/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
+    const token = getToken();
+    if (!token) return;
 
-    if (res.ok) {
-      setHotels(
-        hotels.map((h) =>
-          h._id === id ? { ...h, ...updatedData } : h
-        )
-      );
-      setEditingHotel(null);
-      alert("✅ Hotel updated successfully!");
-    } else {
+    try {
+      const res = await fetch(`${API_URL}/hotels/${id}`, {
+        method: "PUT",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (res.ok) {
+        const { hotel } = await res.json();
+        setHotels(
+          hotels.map((h) =>
+            h._id === id ? hotel : h // Use updated hotel from response
+          )
+        );
+        setEditingHotel(null);
+        alert("✅ Hotel updated successfully!");
+      } else {
+        throw new Error('Failed to update');
+      }
+    } catch (err) {
       alert("❌ Error updating hotel");
     }
   };
+
+  if (loading) return <p>Loading hotels...</p>
+  if (error) return <p className="status error">{error}</p>
 
   return (
     <div className="home">
@@ -63,7 +115,7 @@ const EditHotels = () => {
         {hotels.map((hotel) => (
           <div key={hotel._id} className="hotel-card">
             {editingHotel === hotel._id ? (
-              <>
+              <div className="edit-form">
                 <input
                   type="text"
                   value={updatedData.title}
@@ -87,28 +139,28 @@ const EditHotels = () => {
                 ></textarea>
 
                 <div className="edit-buttons">
-                  <button onClick={() => saveEdit(hotel._id)}>💾 Save</button>
-                  <button onClick={() => setEditingHotel(null)}>❌ Cancel</button>
+                  <button onClick={() => saveEdit(hotel._id)} className="btn-save">💾 Save</button>
+                  <button onClick={() => setEditingHotel(null)} className="btn-cancel">❌ Cancel</button>
                 </div>
-              </>
+              </div>
             ) : (
               <>
-                {/* ✅ FIXED image display */}
                 <img
                   src={
                     hotel.images && hotel.images.length > 0
                       ? hotel.images[0]
-                      : "https://via.placeholder.com/300x200?text=No+Image"
+                      : "https://placehold.co/300x200/0a0f0f/00cccc?text=No+Image"
                   }
                   alt={hotel.title}
                   className="hotel-img"
+                  onError={(e) => { e.target.src = 'https://placehold.co/300x200/0a0f0f/00cccc?text=No+Image' }}
                 />
                 <h3>{hotel.title}</h3>
-                <p>{hotel.description}</p>
+                <p>{hotel.description.slice(0, 100)}...</p>
 
                 <div className="edit-buttons">
-                  <button onClick={() => startEdit(hotel)}>✏️ Edit</button>
-                  <button onClick={() => deleteHotel(hotel._id)}>🗑 Delete</button>
+                  <button onClick={() => startEdit(hotel)} className="btn-edit">✏️ Edit</button>
+                  <button onClick={() => deleteHotel(hotel._id)} className="btn-delete">🗑 Delete</button>
                 </div>
               </>
             )}
@@ -120,3 +172,4 @@ const EditHotels = () => {
 };
 
 export default EditHotels;
+
