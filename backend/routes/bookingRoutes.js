@@ -23,18 +23,39 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
     
-    // Get hotel name
+    // Get hotel name and total rooms
     const hotel = await Hotel.findById(hotelId);
     if (!hotel) {
       return res.status(404).json({ error: "Hotel not found" });
     }
+
+    // === NEW: Availability Check ===
+    const checkIn = new Date(checkInDate);
+    checkIn.setHours(0, 0, 0, 0); // Start of the day
+    
+    const nextDay = new Date(checkIn);
+    nextDay.setDate(nextDay.getDate() + 1); // Start of next day
+
+    const bookedRooms = await Booking.countDocuments({
+      hotel: hotelId,
+      checkInDate: {
+        $gte: checkIn,
+        $lt: nextDay,
+      },
+    });
+
+    if (bookedRooms >= hotel.totalRooms) {
+      return res.status(400).json({ error: "Hotel is fully booked for this date" });
+    }
+    // === END Availability Check ===
+
 
     const newBooking = new Booking({
       hotel: hotelId,
       hotelName: hotel.title,
       customerName,
       customerEmail,
-      checkInDate: new Date(checkInDate),
+      checkInDate: checkIn, // Use the normalized date
       daysToStay: Number(daysToStay),
       bedsRequired: Number(bedsRequired),
     });
@@ -59,14 +80,19 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-// --- Check if a hotel is booked for a SPECIFIC DATE (User action - Public) ---
-router.get("/check/:hotelId", async (req, res) => {
+// --- NEW: Check hotel availability for a SPECIFIC DATE (User action - Public) ---
+router.get("/availability/:hotelId", async (req, res) => {
   try {
     const { hotelId } = req.params;
     const { date } = req.query; // e.g., ?date=2025-11-03
 
     if (!date) {
       return res.status(400).json({ error: "Date query parameter is required" });
+    }
+
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) {
+      return res.status(404).json({ error: "Hotel not found" });
     }
 
     // Get the start of the requested date
@@ -77,7 +103,7 @@ router.get("/check/:hotelId", async (req, res) => {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
 
-    const booking = await Booking.findOne({
+    const bookedRooms = await Booking.countDocuments({
       hotel: hotelId,
       checkInDate: {
         $gte: startDate, // Greater than or equal to start of day
@@ -85,12 +111,20 @@ router.get("/check/:hotelId", async (req, res) => {
       },
     });
 
-    res.json({ isBooked: !!booking }); // Send true if booking exists, false otherwise
+    const availableRooms = hotel.totalRooms - bookedRooms;
+
+    res.json({ 
+      totalRooms: hotel.totalRooms, 
+      bookedRooms, 
+      availableRooms: availableRooms > 0 ? availableRooms : 0
+    });
+
   } catch (err) {
-    console.error("❌ Error checking booking:", err);
+    console.error("❌ Error checking availability:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 // --- Get a single booking (Admin action - Protected) ---
 router.get("/:id", authMiddleware, async (req, res) => {
@@ -154,5 +188,3 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 });
 
 export default router;
-
-

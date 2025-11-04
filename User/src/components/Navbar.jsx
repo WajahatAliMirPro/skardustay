@@ -42,9 +42,7 @@ const Navbar = () => {
         {/* --- User-Facing Links --- */}
         <Link to="/" className="nav-link">Home</Link>
         
-        {/* --- Admin Link --- */}
-        {/* We will replace this later with a conditional "Logout" button */}
-        <Link to="/login" className="nav-link admin-link">Admin Login</Link>
+        {/* --- Admin Link Removed --- */}
       </div>
     </nav>
   );

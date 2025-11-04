@@ -9,6 +9,7 @@ const EditHotels = () => {
   const [updatedData, setUpdatedData] = useState({
     title: "",
     description: "",
+    totalRooms: 10, // 1. Add totalRooms to state
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -70,6 +71,7 @@ const EditHotels = () => {
     setUpdatedData({
       title: hotel.title,
       description: hotel.description,
+      totalRooms: hotel.totalRooms || 10, // 2. Set totalRooms on edit start
     });
   };
 
@@ -85,7 +87,7 @@ const EditHotels = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify(updatedData), // 3. updatedData now includes totalRooms
       });
 
       if (res.ok) {
@@ -138,6 +140,20 @@ const EditHotels = () => {
                   placeholder="Hotel Description"
                 ></textarea>
 
+                {/* 4. Add input for totalRooms */}
+                <input
+                  type="number"
+                  value={updatedData.totalRooms}
+                  onChange={(e) =>
+                    setUpdatedData({
+                      ...updatedData,
+                      totalRooms: Number(e.target.value),
+                    })
+                  }
+                  placeholder="Total Rooms"
+                  min="1"
+                />
+
                 <div className="edit-buttons">
                   <button onClick={() => saveEdit(hotel._id)} className="btn-save">💾 Save</button>
                   <button onClick={() => setEditingHotel(null)} className="btn-cancel">❌ Cancel</button>
@@ -157,6 +173,11 @@ const EditHotels = () => {
                 />
                 <h3>{hotel.title}</h3>
                 <p>{hotel.description.slice(0, 100)}...</p>
+                {/* 5. Display total rooms */}
+                <p style={{color: '#b2ffff', fontWeight: 500, padding: '0 15px'}}>
+                  Total Rooms: {hotel.totalRooms || 'N/A'}
+                </p>
+
 
                 <div className="edit-buttons">
                   <button onClick={() => startEdit(hotel)} className="btn-edit">✏️ Edit</button>
@@ -172,4 +193,3 @@ const EditHotels = () => {
 };
 
 export default EditHotels;
-
