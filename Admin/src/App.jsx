@@ -11,11 +11,11 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx"; // Import Protecte
 import AdminLayout from "./components/AdminLayout.jsx"; // Import AdminLayout
 
 import "./App.css";
-
+// ...
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter> {/* <-- 1. BrowserRouter goes on the outside */}
+      <AuthProvider> {/* <-- 2. AuthProvider goes on the inside */}
         <Routes>
           {/* Public Login Route */}
           <Route path="/login" element={<Login />} />
@@ -35,10 +35,9 @@ function App() {
             <Route path="/hotel/:id" element={<HotelDetail />} />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
-}
-
+};
 export default App;
 

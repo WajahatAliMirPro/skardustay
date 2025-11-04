@@ -1,4 +1,4 @@
-// backend/middleware/authMiddleware.js
+// Filepath: backend/middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 
 const authMiddleware = (req, res, next) => {
@@ -22,5 +22,3 @@ const authMiddleware = (req, res, next) => {
 };
 
 export default authMiddleware;
-
-
