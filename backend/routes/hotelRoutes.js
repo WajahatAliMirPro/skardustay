@@ -18,24 +18,29 @@ const upload = multer({ storage });
 // ➕ Add hotel (with images) - Admin Protected
 router.post("/", authMiddleware, upload.array("images", 3), async (req, res) => {
   try {
-    const { title, description } = req.body; 
+    // Extract totalRooms along with title and description
+    const { title, description, totalRooms } = req.body; 
 
     if (!title || !description) {
       return res.status(400).json({ error: "Title and description are required" });
     }
 
-    // Handle case where no files are uploaded (if you want to allow this)
+    // Handle case where no files are uploaded
     let imageUrls = [];
     if (req.files && req.files.length > 0) {
       imageUrls = req.files.map(
         (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
       );
-    } else {
-      // You might want to return an error if images are required
-      // return res.status(400).json({ error: "At least one image is required" });
     }
 
-    const newHotel = new Hotel({ title, description, images: imageUrls });
+    // Create new hotel with totalRooms (default to 10 if not provided)
+    const newHotel = new Hotel({ 
+      title, 
+      description, 
+      images: imageUrls,
+      totalRooms: Number(totalRooms) || 10 
+    });
+
     await newHotel.save();
     res.status(201).json({ message: "✅ Hotel added successfully", hotel: newHotel });
   } catch (err) {
@@ -69,15 +74,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// --- ✏️ Update hotel (text only) - Admin Protected ---
+// --- ✏️ Update hotel (text fields + rooms) - Admin Protected ---
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
-    const { title, description } = req.body;
+    // Extract totalRooms to allow updating inventory
+    const { title, description, totalRooms } = req.body;
+
     const updatedHotel = await Hotel.findByIdAndUpdate(
       req.params.id,
-      { title, description },
+      { 
+        title, 
+        description,
+        totalRooms: Number(totalRooms) // Update totalRooms
+      },
       { new: true } // Return the updated document
     );
+
     if (!updatedHotel) {
       return res.status(404).json({ error: "Hotel not found" });
     }
@@ -88,10 +100,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// Note: A PUT/POST for updating images would be more complex,
-// involving deleting old images and uploading new ones.
-// This implementation only updates text fields.
-
 // --- 🗑️ Delete hotel - Admin Protected ---
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
@@ -99,7 +107,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     if (!deletedHotel) {
       return res.status(404).json({ error: "Hotel not found" });
     }
-    // You might also want to delete associated images from the 'uploads' folder here.
+    // Optional: Delete associated images from the 'uploads' folder here if needed.
     res.json({ message: "✅ Hotel deleted successfully" });
   } catch (err) {
     console.error("❌ Error deleting hotel:", err);
@@ -108,5 +116,3 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 });
 
 export default router;
-
-

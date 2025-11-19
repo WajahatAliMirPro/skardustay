@@ -1,17 +1,16 @@
 {
-  "name": "skardustay-main",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:all": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix skardustay\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
-  ,
-  "devDependencies": {
-    "concurrently": "^8.2.0"
-  }
+    "name": "skardustay-main",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "mir": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix User\" \"npm run dev --prefix Admin\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    }
 }
